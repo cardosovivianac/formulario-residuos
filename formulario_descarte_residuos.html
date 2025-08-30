@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Controle de Resíduos — Oficina Mecânica</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121937; --muted:#a9b3d6; --text:#e8ecff; --accent:#7c9cff; --accent-2:#a6ffda; --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; background:linear-gradient(180deg,#0b1020 0%, #151a2e 100%); color:var(--text)}
+    .wrap{max-width:880px;margin:40px auto;padding:0 16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:16px;backdrop-filter: blur(6px); box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.08)}
+    header h1{font-size:20px;margin:0;letter-spacing:.2px}
+    header .tag{font-size:12px;color:#0c1224;background:var(--accent);padding:6px 10px;border-radius:999px;font-weight:600}
+    form{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;padding:20px}
+    .field{grid-column: span 12; display:flex;flex-direction:column;gap:6px}
+    @media(min-width:700px){
+      .col-6{grid-column: span 6}
+      .col-4{grid-column: span 4}
+      .col-3{grid-column: span 3}
+    }
+    label{font-size:13px;color:var(--muted)}
+    input, select, textarea{width:100%;padding:12px 12px;border-radius:10px;background:#0e142a;border:1px solid rgba(255,255,255,.12);color:var(--text);outline:none}
+    input:focus, select:focus, textarea:focus{border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,156,255,.2)}
+    textarea{min-height:90px;resize:vertical}
+    .row{display:flex;gap:10px;align-items:center}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;padding:0 20px 20px}
+    button{appearance:none;border:none;padding:12px 14px;border-radius:12px;font-weight:600;cursor:pointer}
+    .primary{background:var(--accent);color:#0b1020}
+    .secondary{background:#0e142a;color:var(--text);border:1px solid rgba(255,255,255,.16)}
+    .danger{background:var(--danger);color:#0b1020}
+    .hint{font-size:12px;color:var(--muted)}
+    .ok{color:var(--accent-2);font-weight:600}
+    .table{overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+    th{color:var(--muted);text-align:left}
+    .footer{padding:12px 20px;color:var(--muted);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <h1>Controle de Resíduos — Oficina Mecânica</h1>
+        <span class="tag">Asphalt Motorcycles</span>
+      </header>
+
+      <form id="residuoForm">
+        <!-- Registro do resíduo -->
+        <div class="field col-4">
+          <label for="tipo">Tipo de resíduo *</label>
+          <select id="tipo" name="tipo" required>
+            <option value="">Selecione…</option>
+            <option>Óleo lubrificante usado</option>
+            <option>Filtros de óleo/combustível</option>
+            <option>Pneus</option>
+            <option>Baterias</option>
+            <option>Peças metálicas</option>
+            <option>Panos/estopa contaminada</option>
+            <option>Fluído de freio/refrigeração</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="field col-4">
+          <label for="quantidade">Quantidade *</label>
+          <input id="quantidade" name="quantidade" type="number" min="0" step="0.01" required placeholder="Ex.: 15" />
+        </div>
+        <div class="field col-4">
+          <label for="unidade">Unidade *</label>
+          <select id="unidade" name="unidade" required>
+            <option value="">Selecione…</option>
+            <option value="L">Litros (L)</option>
+            <option value="kg">Quilos (kg)</option>
+            <option value="un">Unidades (un)</option>
+          </select>
+        </div>
+
+        <div class="field col-4">
+          <label for="data">Data do descarte *</label>
+          <input id="data" name="data" type="date" required />
+        </div>
+        <div class="field col-4">
+          <label for="destino">Destino *</label>
+          <select id="destino" name="destino" required>
+            <option value="">Selecione…</option>
+            <option>Re-refino/reciclagem</option>
+            <option>Coleta por empresa autorizada</option>
+            <option>Reuso interno</option>
+            <option>Aterro/licenciado</option>
+          </select>
+        </div>
+        <div class="field col-4">
+          <label for="coletora">Empresa coletora (se houver)</label>
+          <input id="coletora" name="coletora" placeholder="Nome da empresa" />
+        </div>
+
+        <div class="field col-6">
+          <label for="certificado">Nº MTR/Certificado (opcional)</label>
+          <input id="certificado" name="certificado" placeholder="Informe para rastreabilidade" />
+        </div>
+        <div class="field col-6">
+          <label for="comprovante">Comprovante (foto/pdf, opcional)</label>
+          <input id="comprovante" name="comprovante" type="file" accept="image/*,.pdf" />
+        </div>
+
+        <div class="field">
+          <label for="obs">Observações</label>
+          <textarea id="obs" name="obs" placeholder="Detalhes do descarte, condições, lote, etc."></textarea>
+        </div>
+
+        <div class="field">
+          <label class="row" style="gap:8px">
+            <input type="checkbox" id="consent" required />
+            Declaro que as informações são verídicas e autorizo o uso para fins de registro acadêmico.
+          </label>
+          <span class="hint">Ao enviar, os dados ficam salvos somente neste navegador (localStorage). Você pode exportar para CSV.</span>
+        </div>
+
+        <input type="hidden" id="timestamp" name="timestamp" />
+      </form>
+
+      <div class="actions">
+        <button class="primary" id="sendBtn">Salvar registro</button>
+        <button class="secondary" id="exportBtn">Baixar CSV</button>
+        <button class="danger" id="clearBtn">Limpar tudo</button>
+        <span id="status" class="hint"></span>
+      </div>
+
+      <div class="table" style="padding:0 20px 16px">
+        <table id="previewTable">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Qtd</th>
+              <th>Unid</th>
+              <th>Destino</th>
+              <th>Coletora</th>
+              <th>MTR/Cert.</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="footer">Dica: compartilhe este arquivo HTML com a oficina. Eles podem registrar os descartes e enviar o CSV para você anexar ao relatório da ACE.</div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('residuoForm');
+    const statusEl = document.getElementById('status');
+    const tableBody = document.querySelector('#previewTable tbody');
+
+    const LS_KEY = 'oficina_residuos_registros_v1';
+
+    function nowISO(){
+      return new Date().toISOString();
+    }
+
+    function getData(){
+      try{ return JSON.parse(localStorage.getItem(LS_KEY)) || [] }catch(e){ return [] }
+    }
+
+    function setData(list){
+      localStorage.setItem(LS_KEY, JSON.stringify(list));
+    }
+
+    function rowToObj(){
+      const fd = new FormData(form);
+      return Object.fromEntries(fd.entries());
+    }
+
+    function render(){
+      const data = getData();
+      tableBody.innerHTML = '';
+      for(const r of data){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.data || ''}</td>
+          <td>${r.tipo || ''}</td>
+          <td>${r.quantidade || ''}</td>
+          <td>${r.unidade || ''}</td>
+          <td>${r.destino || ''}</td>
+          <td>${r.coletora || ''}</td>
+          <td>${r.certificado || ''}</td>
+        `;
+        tableBody.appendChild(tr);
+      }
+    }
+
+    function toCSV(rows){
+      if(!rows.length) return '';
+      const headers = Object.keys(rows[0]);
+      const escape = (v)=>`"${String(v ?? '').replace(/"/g,'""')}"`;
+      const lines = [headers.join(',')];
+      for(const row of rows){
+        lines.push(headers.map(h=>escape(row[h])).join(','));
+      }
+      return lines.join('\n');
+    }
+
+    function download(filename, text){
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], {type:'text/csv;charset=utf-8;'}));
+      a.download = filename; a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    document.getElementById('sendBtn').addEventListener('click', ()=>{
+      document.getElementById('timestamp').value = nowISO();
+      if(!form.reportValidity()) return;
+      const obj = rowToObj();
+      const list = getData();
+      list.push(obj); setData(list);
+      form.reset();
+      render();
+      statusEl.innerHTML = '<span class="ok">Registro salvo no navegador.</span>';
+      setTimeout(()=> statusEl.textContent = '', 3000);
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const data = getData();
+      if(!data.length){
+        statusEl.textContent = 'Sem registros para exportar.'; return;
+      }
+      const csv = toCSV(data);
+      const date = new Date().toISOString().slice(0,10);
+      download(`residuos_oficina_${date}.csv`, csv);
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      if(confirm('Apagar todos os registros salvos neste navegador?')){
+        localStorage.removeItem(LS_KEY); render();
+        statusEl.textContent = 'Registros apagados.';
+        setTimeout(()=> statusEl.textContent = '', 2500);
+      }
+    });
+
+    document.getElementById('data').valueAsDate = new Date();
+    render();
+  </script>
+</body>
+</html>
